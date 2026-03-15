@@ -150,4 +150,4 @@ See the [Methodology](http://localhost:3000/methodology) page in the app and [do
 
 ## License
 
-MIT (or your choice).
+MIT 
