@@ -1,0 +1,36 @@
+# AttentionLens — development / demo stack
+# Run: docker-compose up -d
+# Backend: http://localhost:8000
+# Frontend: build and run separately or add service later
+
+version: "3.9"
+
+services:
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    ports:
+      - "8000:8000"
+    env_file:
+      - .env
+    volumes:
+      - ./backend:/app
+      - ./ml/saved_models:/app/ml_models:ro
+    # Uncomment when ML models are ready:
+    # command: uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
+
+  # Optional: add Postgres when moving off SQLite
+  # db:
+  #   image: postgres:15-alpine
+  #   environment:
+  #     POSTGRES_USER: attentionlens
+  #     POSTGRES_PASSWORD: dev
+  #     POSTGRES_DB: attentionlens
+  #   ports:
+  #     - "5432:5432"
+  #   volumes:
+  #     - pgdata:/var/lib/postgresql/data
+
+# volumes:
+#   pgdata:
