@@ -2,7 +2,10 @@
 Prediction service: mock implementation for MVP; swap for real ML pipeline later.
 """
 
+from __future__ import annotations
+
 import random
+from typing import Optional
 from app.schemas.predict import (
     PredictionResponse,
     ExplanationItem,
@@ -32,7 +35,7 @@ def _mock_bucket(score: float) -> str:
     return "high"
 
 
-def _mock_explanations(text: str | None, has_image: bool) -> list[ExplanationItem]:
+def _mock_explanations(text: Optional[str], has_image: bool) -> list[ExplanationItem]:
     """Generate plausible heuristic-style explanations from input."""
     explanations: list[ExplanationItem] = []
     if text:
@@ -89,7 +92,7 @@ def _mock_explanations(text: str | None, has_image: bool) -> list[ExplanationIte
     return explanations
 
 
-def _mock_recommendations(text: str | None) -> list[RecommendationItem]:
+def _mock_recommendations(text: Optional[str]) -> list[RecommendationItem]:
     recs: list[RecommendationItem] = []
     if text:
         if len(text) > 80:
@@ -113,7 +116,7 @@ def _mock_recommendations(text: str | None) -> list[RecommendationItem]:
     return recs
 
 
-def predict_text(text: str, platform: str | None = None, content_type: str | None = None) -> PredictionResponse:
+def predict_text(text: str, platform: Optional[str] = None, content_type: Optional[str] = None) -> PredictionResponse:
     """Run text-only prediction (mock)."""
     score = _mock_score()
     return PredictionResponse(
@@ -128,10 +131,10 @@ def predict_text(text: str, platform: str | None = None, content_type: str | Non
 
 
 def predict_image(
-    image_base64: str | None = None,
-    image_url: str | None = None,
-    platform: str | None = None,
-    content_type: str | None = None,
+    image_base64: Optional[str] = None,
+    image_url: Optional[str] = None,
+    platform: Optional[str] = None,
+    content_type: Optional[str] = None,
 ) -> PredictionResponse:
     """Run image-only prediction (mock)."""
     has_image = bool(image_base64 or image_url)
@@ -163,10 +166,10 @@ def predict_image(
 
 def predict_multimodal(
     text: str,
-    image_base64: str | None = None,
-    image_url: str | None = None,
-    platform: str | None = None,
-    content_type: str | None = None,
+    image_base64: Optional[str] = None,
+    image_url: Optional[str] = None,
+    platform: Optional[str] = None,
+    content_type: Optional[str] = None,
 ) -> PredictionResponse:
     """Run combined text + image prediction (mock)."""
     has_image = bool(image_base64 or image_url)
@@ -187,8 +190,8 @@ def predict_multimodal(
 
 def compare_candidates(
     candidates: list[dict],
-    platform: str | None = None,
-    content_type: str | None = None,
+    platform: Optional[str] = None,
+    content_type: Optional[str] = None,
 ) -> CompareResponse:
     """Rank candidates by predicted attention (mock)."""
     results: list[tuple[float, str, float, list, list]] = []
