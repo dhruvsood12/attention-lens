@@ -14,8 +14,8 @@ fi
 (cd backend && uvicorn app.main:app --reload --host "${API_HOST:-0.0.0.0}" --port "${API_PORT:-8000}") &
 BACKEND_PID=$!
 
-# Frontend (from repo root, so backend can run from backend/ with PYTHONPATH)
-cd frontend && npm run dev &
+# Frontend (Vite)
+(cd frontend && npm run dev) &
 FRONTEND_PID=$!
 
 echo "Backend PID $BACKEND_PID (http://localhost:8000)"

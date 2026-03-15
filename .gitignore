@@ -15,6 +15,9 @@ env/
 .next/
 out/
 dist/
+*.tsbuildinfo
+frontend/vite.config.d.ts
+frontend/vite.config.js
 build/
 *.egg-info/
 *.egg

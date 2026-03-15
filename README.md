@@ -25,14 +25,14 @@ Creators and growth teams test copy and thumbnails by posting and hoping. Attent
 
 ```
 attentionlens/
-├── frontend/          # Next.js (App Router), TypeScript, Tailwind
-├── backend/           # FastAPI, Pydantic, prediction + compare API
-├── ml/                # Data loaders, features, training, evaluation, inference
-├── scripts/           # setup, run_dev, run_backend, train_all
-└── docs/              # architecture, modeling, product_spec
+├── frontend/          # Vite + React, TypeScript, Tailwind (Lovable UI)
+├── backend/          # FastAPI, Pydantic, prediction + compare API
+├── ml/               # Data loaders, features, training, evaluation, inference
+├── scripts/          # setup, run_dev, run_backend, train_all
+└── docs/             # architecture, modeling, product_spec
 ```
 
-- **Frontend**: Landing, Analyze (single + compare), Methodology. Calls backend for `/predict/*` and `/compare`.
+- **Frontend**: Vite + React app with Landing, Analyze, Compare, Methodology. Calls backend at `http://localhost:8000` (override with `VITE_API_BASE_URL`).
 - **Backend**: REST API; mock predictor by default; swap to real ML pipeline when models are trained.
 - **ML**: Dataset loaders (YouTube, Reddit, social), feature engineering, baseline models (text, image, multimodal), evaluation, inference pipeline. See [docs/architecture.md](docs/architecture.md) and [docs/modeling.md](docs/modeling.md).
 
@@ -44,37 +44,54 @@ attentionlens/
 
 | Layer      | Tech |
 |-----------|------|
-| Frontend  | Next.js 14 (App Router), TypeScript, Tailwind CSS |
+| Frontend  | Vite, React 18, TypeScript, Tailwind CSS, Framer Motion |
 | Backend   | Python, FastAPI, Pydantic, Uvicorn |
 | ML        | pandas, numpy, scikit-learn, lightgbm/xgboost, sentence-transformers, CLIP (planned) |
 | Storage   | Local files + SQLite to start; structure allows Postgres later |
 
 ---
 
-## Setup
+## How to run
 
-1. **Clone and install**
+### Prerequisites
+
+- **Node.js** 18+ and **npm**
+- **Python** 3.10+
+
+### 1. Clone and install
    ```bash
-   git clone <repo>
+   git clone https://github.com/YOUR_USERNAME/attention-lens.git
    cd attention-lens
    ./scripts/setup.sh
    ```
    This creates a backend venv, installs backend and frontend deps, and copies `.env.example` to `.env` if missing.
 
-2. **Run backend** (from repo root)
-   ```bash
-   ./scripts/run_backend.sh
-   ```
-   API: http://localhost:8000 — docs at http://localhost:8000/docs
+### 2. Start the backend
 
-3. **Run frontend** (in another terminal)
-   ```bash
-   cd frontend && npm run dev
-   ```
-   App: http://localhost:3000
+From repo root (in one terminal):
 
-4. **Try it**  
-   Open Analyze, enter a title or caption, optionally add a thumbnail or switch to “Compare titles.” Results use the **mock predictor** until you train and plug in real models.
+```bash
+./scripts/run_backend.sh
+```
+
+- API: **http://localhost:8000** — Docs: **http://localhost:8000/docs**
+
+### 3. Start the frontend
+
+In a second terminal:
+
+```bash
+cd frontend && npm run dev
+```
+
+- App: **http://localhost:3000**
+
+### 4. Use the app
+
+- **Analyze**: Enter a title/headline (and optional thumbnail), pick a platform, hit Analyze.
+- **Compare**: Enter 2–5 title variants and hit Compare to see them ranked.
+- Results use the **mock predictor** by default. To use the trained text model: set `USE_MOCK_PREDICTOR=false` in `.env`, run `./scripts/train_all.sh` once, then restart the backend.
+
 
 ---
 
