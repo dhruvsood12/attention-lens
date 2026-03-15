@@ -20,8 +20,8 @@ const config: Config = {
         border: "var(--border)",
       },
       fontFamily: {
-        sans: ["var(--font-geist-sans)", "system-ui", "sans-serif"],
-        mono: ["var(--font-geist-mono)", "monospace"],
+        sans: ["system-ui", "Segoe UI", "Roboto", "sans-serif"],
+        mono: ["ui-monospace", "monospace"],
       },
       animation: {
         "fade-in": "fadeIn 0.4s ease-out",
