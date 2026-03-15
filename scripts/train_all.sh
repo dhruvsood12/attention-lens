@@ -1,13 +1,12 @@
 #!/usr/bin/env bash
-# Train all baselines (text, image, multimodal). Requires data in ml/data/.
-# TODO: point to real scripts once implemented.
+# Train all baselines (text, image, multimodal). Run from repo root.
+# Text baseline: uses synthetic data if no CSV provided; saves to ml/saved_models/.
 set -e
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 cd "$ROOT"
 
-echo "Training pipeline not yet implemented."
-echo "Next steps:"
-echo "  1. Add datasets under ml/data/"
-echo "  2. Implement ml/src/data/loaders.py and target_engineering"
-echo "  3. Implement ml/src/models/train_*.py"
-echo "  4. Run this script to train and save models to ml/saved_models/"
+echo "Training text baseline..."
+pip install -q pandas numpy scikit-learn joblib 2>/dev/null || true
+PYTHONPATH=. python -m ml.src.models.train_text_model "$@"
+echo "Done. Model saved to ml/saved_models/text_baseline.joblib"
+echo "Set USE_MOCK_PREDICTOR=false and restart backend to use the real model."

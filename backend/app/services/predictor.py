@@ -1,10 +1,12 @@
 """
-Prediction service: mock implementation for MVP; swap for real ML pipeline later.
+Prediction service: mock implementation for MVP; uses real ML pipeline when model exists.
 """
 
 from __future__ import annotations
 
+import os
 import random
+import sys
 from typing import Optional
 from app.schemas.predict import (
     PredictionResponse,
@@ -16,6 +18,47 @@ from app.core.config import settings
 
 
 MOCK_MODEL_NAME = "mock_baseline"
+
+
+def _repo_root() -> str:
+    """Resolve repo root (parent of backend/). backend/app/services -> backend -> repo."""
+    return os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", ".."))
+
+
+def _model_path(setting_path: str) -> str:
+    """Resolve model path; if relative, from repo root."""
+    if os.path.isabs(setting_path):
+        return setting_path
+    return os.path.join(_repo_root(), setting_path)
+
+
+def _ensure_ml_path() -> None:
+    """Add repo root to sys.path so ml.src can be imported."""
+    root = _repo_root()
+    if root not in sys.path:
+        sys.path.insert(0, root)
+
+
+def _run_text_pipeline_real(text: str, platform: Optional[str]) -> Optional[PredictionResponse]:
+    """Run real text pipeline if model exists; return None on failure."""
+    _ensure_ml_path()
+    path = _model_path(settings.model_text_path)
+    if not os.path.isfile(path):
+        return None
+    try:
+        from ml.src.inference.pipeline import run_text_pipeline
+        out = run_text_pipeline(text, path, platform)
+        return PredictionResponse(
+            score=out["score"],
+            bucket=out["bucket"],
+            confidence=out["confidence"],
+            explanations=[ExplanationItem(**e) for e in out["explanations"]],
+            recommendations=[RecommendationItem(**r) for r in out["recommendations"]],
+            model_used=out["model_used"],
+            feature_summary=out.get("feature_summary"),
+        )
+    except Exception:
+        return None
 
 
 def _mock_score() -> float:
@@ -117,7 +160,11 @@ def _mock_recommendations(text: Optional[str]) -> list[RecommendationItem]:
 
 
 def predict_text(text: str, platform: Optional[str] = None, content_type: Optional[str] = None) -> PredictionResponse:
-    """Run text-only prediction (mock)."""
+    """Run text-only prediction: real model if available and not mock, else mock."""
+    if not settings.use_mock_predictor:
+        real = _run_text_pipeline_real(text, platform)
+        if real is not None:
+            return real
     score = _mock_score()
     return PredictionResponse(
         score=score,
@@ -171,8 +218,12 @@ def predict_multimodal(
     platform: Optional[str] = None,
     content_type: Optional[str] = None,
 ) -> PredictionResponse:
-    """Run combined text + image prediction (mock)."""
+    """Run combined text + image: real text model if no image and not mock, else mock."""
     has_image = bool(image_base64 or image_url)
+    if not has_image and not settings.use_mock_predictor:
+        real = _run_text_pipeline_real(text, platform)
+        if real is not None:
+            return real
     score = _mock_score()
     return PredictionResponse(
         score=score,
