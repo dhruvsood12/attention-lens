@@ -60,7 +60,7 @@ attentionlens/
 
 ### 1. Clone and install
    ```bash
-   git clone https://github.com/YOUR_USERNAME/attention-lens.git
+   git clone https://github.com/dhruvsood12/attention-lens.git
    cd attention-lens
    ./scripts/setup.sh
    ```
