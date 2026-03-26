@@ -81,7 +81,7 @@ From repo root (in one terminal):
 In a second terminal:
 
 ```bash
-cd frontend && npm run dev
+cd ~/attention-lens/frontend && npm run dev
 ```
 
 - App: **http://localhost:3000**
