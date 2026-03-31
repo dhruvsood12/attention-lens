@@ -42,6 +42,7 @@ attentionlens/
 - **Frontend**: Vite + React app with Landing, Analyze, Compare, Methodology. Calls backend at `http://localhost:8000` (override with `VITE_API_BASE_URL`).
 - **Backend**: REST API; mock predictor by default; swap to real ML pipeline when models are trained.
 - **ML**: Dataset loaders (YouTube, Reddit, social), feature engineering, baseline models (text, image, multimodal), evaluation, inference pipeline. See [docs/architecture.md](docs/architecture.md) and [docs/modeling.md](docs/modeling.md).
+- **Audit**: See [docs/audit.md](docs/audit.md) for a full repo audit (security + recruiter-readiness) and a prioritized hardening list.
 
 
 ---
@@ -144,6 +145,19 @@ Scripts live under `ml/src/evaluation/` (TODO until models exist).
 - We frame it as **decision support** for creators and teams—not an authority on what to post.
 
 See the [Methodology](http://localhost:3000/methodology) page in the app and [docs/product_spec.md](docs/product_spec.md).
+
+---
+
+## Security
+
+See [SECURITY.md](SECURITY.md) for the threat model and current protections (CORS hardening, payload caps, rate limiting).
+
+Run the security/auth test matrix with:
+```bash
+cd backend && pytest -q
+```
+
+These checks validate input validation (`422`), payload caps (`413`), rate limiting (`429`), and current CORS policy behavior using FastAPI `TestClient` (see `backend/tests/`).
 
 ---
 

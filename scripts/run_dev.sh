@@ -5,7 +5,12 @@ ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 cd "$ROOT"
 
 # Load .env for backend
-if [ -f .env ]; then export $(grep -v '^#' .env | xargs); fi
+if [ -f .env ]; then
+  set -o allexport
+  # shellcheck disable=SC1091
+  source .env
+  set +o allexport
+fi
 
 # Backend (run from backend dir so app resolves)
 if [ -d backend/.venv ]; then

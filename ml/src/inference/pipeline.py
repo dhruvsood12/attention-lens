@@ -24,15 +24,14 @@ FEATURE_ORDER = [
     "curiosity_gap",
 ]
 
-BINS = [0, 40, 65, 100]
-BUCKET_LABELS = ["low", "medium", "high"]
+DEFAULT_BINS = [0, 40, 65, 100]
 
 
-def _score_to_bucket(score: float) -> str:
+def _score_to_bucket(score: float, bins: list[float]) -> str:
     score = max(0, min(100, score))
-    if score < 40:
+    if score < bins[1]:
         return "low"
-    if score < 65:
+    if score < bins[2]:
         return "medium"
     return "high"
 
@@ -52,10 +51,11 @@ def _explanations_from_importance(
     feature_importance: dict[str, float],
     feature_values: dict[str, float],
     score: float,
+    bins: list[float],
 ) -> list[dict[str, Any]]:
     """Build human-readable explanations from feature importance and current values."""
     out = []
-    bucket = _score_to_bucket(score)
+    _ = _score_to_bucket(score, bins)
     # Length
     length = feature_values.get("text_length", 0)
     if length > 80:
@@ -145,6 +145,7 @@ def run_text_pipeline(
     artifact = _load_artifact(model_path)
     model = artifact["model"]
     feature_order = artifact.get("feature_order", FEATURE_ORDER)
+    bins = artifact.get("bins", DEFAULT_BINS)
 
     feats = extract_text_features(text or "")
     vec = [feats.get(k, 0.0) for k in feature_order]
@@ -153,7 +154,7 @@ def run_text_pipeline(
     score = float(model.predict(X)[0])
     score = max(0.0, min(100.0, round(score, 1)))
 
-    bucket = _score_to_bucket(score)
+    bucket = _score_to_bucket(score, bins)
     # Confidence from model uncertainty proxy: use inverse of predicted variance if available, else fixed
     try:
         preds = model.predict(X)
@@ -167,7 +168,7 @@ def run_text_pipeline(
         for i, name in enumerate(feature_order):
             if i < len(model.feature_importances_):
                 importance[name] = float(model.feature_importances_[i])
-    explanations = _explanations_from_importance(importance, feats, score)
+    explanations = _explanations_from_importance(importance, feats, score, bins)
     recommendations = _recommendations(text, feats, score)
 
     return {
@@ -176,7 +177,7 @@ def run_text_pipeline(
         "confidence": confidence,
         "explanations": explanations,
         "recommendations": recommendations,
-        "model_used": "text_baseline",
+        "model_used": f"text_baseline_v{artifact.get('artifact_version', 0)}",
         "feature_summary": feats,
     }
 

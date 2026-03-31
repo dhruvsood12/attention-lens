@@ -16,7 +16,9 @@ services:
       - .env
     volumes:
       - ./backend:/app
-      - ./ml/saved_models:/app/ml_models:ro
+      # Mount models to the path the backend expects by default:
+      # MODEL_TEXT_PATH=ml/saved_models/text_baseline.joblib (relative to repo root)
+      - ./ml/saved_models:/app/ml/saved_models:ro
     # Uncomment when ML models are ready:
     # command: uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
 
