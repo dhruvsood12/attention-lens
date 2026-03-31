@@ -1,7 +1,8 @@
 """Schemas for candidate comparison (e.g. multiple titles)."""
 
 from typing import Optional
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, model_validator
+from pydantic.networks import HttpUrl
 
 from app.schemas.predict import ExplanationItem, RecommendationItem
 
@@ -10,8 +11,18 @@ class CompareCandidate(BaseModel):
     """One candidate in a comparison (e.g. one title or one thumbnail)."""
     id: str = Field(..., description="Client-provided id for this candidate")
     text: Optional[str] = None
-    image_base64: Optional[str] = None
-    image_url: Optional[str] = None
+    image_base64: Optional[str] = Field(None, max_length=5_000_000)
+    image_url: Optional[HttpUrl] = None
+
+    @model_validator(mode="after")
+    def validate_candidate(self):
+        if not (self.text or self.image_base64 or self.image_url):
+            raise ValueError("Candidate must include at least one of: text, image_base64, image_url.")
+        if self.image_base64 and self.image_url:
+            raise ValueError("Provide at most one of image_base64 or image_url per candidate.")
+        if self.image_base64 and (not self.image_base64.startswith("data:image/") or ";base64," not in self.image_base64):
+            raise ValueError("image_base64 must be a valid image data URL.")
+        return self
 
 
 class CompareRequest(BaseModel):

@@ -7,6 +7,7 @@ from __future__ import annotations
 import os
 import random
 import sys
+import logging
 from typing import Optional
 from app.schemas.predict import (
     PredictionResponse,
@@ -18,6 +19,7 @@ from app.core.config import settings
 
 
 MOCK_MODEL_NAME = "mock_baseline"
+logger = logging.getLogger("attentionlens.predictor")
 
 
 def _repo_root() -> str:
@@ -44,6 +46,7 @@ def _run_text_pipeline_real(text: str, platform: Optional[str]) -> Optional[Pred
     _ensure_ml_path()
     path = _model_path(settings.model_text_path)
     if not os.path.isfile(path):
+        logger.info("Real model artifact not found; falling back to mock", extra={"model_path": path})
         return None
     try:
         from ml.src.inference.pipeline import run_text_pipeline
@@ -58,6 +61,7 @@ def _run_text_pipeline_real(text: str, platform: Optional[str]) -> Optional[Pred
             feature_summary=out.get("feature_summary"),
         )
     except Exception:
+        logger.exception("Real model inference failed; falling back to mock")
         return None
 
 

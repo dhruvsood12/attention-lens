@@ -8,6 +8,7 @@ from __future__ import annotations
 import argparse
 import os
 import sys
+from datetime import datetime, timezone
 from typing import Optional
 
 import joblib
@@ -39,6 +40,8 @@ FEATURE_ORDER = [
     "listicle",
     "curiosity_gap",
 ]
+
+ARTIFACT_VERSION = 1
 
 
 def build_feature_matrix(df: pd.DataFrame, text_col: str = COL_TEXT) -> np.ndarray:
@@ -100,6 +103,14 @@ def train(
     r2 = r2_score(y_test, y_pred)
 
     artifact = {
+        "artifact_version": ARTIFACT_VERSION,
+        "trained_at": datetime.now(timezone.utc).isoformat(),
+        "model_type": "sklearn.GradientBoostingRegressor",
+        "target": {
+            "name": "normalized_engagement_score",
+            "range": [0, 100],
+            "transform": "log1p_then_percentile_rank",
+        },
         "model": model,
         "feature_order": FEATURE_ORDER,
         "bins": [0, 40, 65, 100],

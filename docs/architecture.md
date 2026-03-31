@@ -4,7 +4,7 @@
 
 AttentionLens is a monorepo containing:
 
-- **frontend** — Next.js (App Router), TypeScript, Tailwind. Landing, Analyze, Methodology.
+- **frontend** — Vite + React Router, TypeScript, Tailwind (Lovable UI). Landing, Analyze, Compare, Methodology.
 - **backend** — FastAPI, Pydantic. REST API for prediction and comparison.
 - **ml** — Data loaders, feature engineering, training scripts, evaluation, inference pipeline.
 
@@ -22,11 +22,12 @@ When `USE_MOCK_PREDICTOR=true`, all prediction routes use the mock service. When
 
 ## Frontend
 
-- **app/page.tsx** — Landing: hero, value props, CTA.
-- **app/analyze/page.tsx** — Analyze: single vs compare mode, text + optional image, results panel.
-- **app/methodology/page.tsx** — Methodology and limitations.
-- **lib/api.ts** — Client for backend API.
-- **components/** — Header, ResultsCard, CompareResults.
+- **src/pages/Landing.tsx** — Landing: hero, product framing, CTA.
+- **src/pages/Analyze.tsx** — Analyze: form input, optional thumbnail, results panel.
+- **src/pages/Compare.tsx** — Compare: A/B title ranking flow.
+- **src/pages/Methodology.tsx** — Methodology and limitations.
+- **src/lib/api.ts** — Client for backend API (`/predict/*`, `/compare`).
+- **src/components/** — Layout and UI components (Navbar, Footer, ResultPanel, etc.).
 
 ## ML Pipeline (planned)
 
