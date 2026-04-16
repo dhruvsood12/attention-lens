@@ -17,13 +17,6 @@ Creators and growth teams test copy and thumbnails by posting and hoping. Attent
 
 ## Screenshots
 
-<img width="702" height="617" alt="Screenshot 2026-03-26 at 7 53 00 PM" src="https://github.com/user-attachments/assets/2c64c688-12d2-4631-ba1a-b8d2fd26978a" />
-<img width="705" height="352" alt="Screenshot 2026-03-26 at 7 53 04 PM" src="https://github.com/user-attachments/assets/db52854d-b963-42e7-b784-3e41c8682c5d" />
-<img width="1275" height="630" alt="Screenshot 2026-03-26 at 7 53 11 PM" src="https://github.com/user-attachments/assets/84007b90-b3d4-4169-ace4-1fae360da2af" />
-<img width="294" height="561" alt="Screenshot 2026-03-26 at 7 54 06 PM" src="https://github.com/user-attachments/assets/a0a5dab6-45a3-4f78-aab4-4744aa55c6f1" />
-<img width="303" height="558" alt="Screenshot 2026-03-26 at 7 54 45 PM" src="https://github.com/user-attachments/assets/f6832b4d-d01f-4621-b95d-ab3529eb0876" />
-<img width="301" height="554" alt="Screenshot 2026-03-26 at 7 54 51 PM" src="https://github.com/user-attachments/assets/9d12c871-5706-41dc-9361-3836eb8dbbd5" />
-<img width="274" height="597" alt="Screenshot 2026-03-26 at 7 54 54 PM" src="https://github.com/user-attachments/assets/a0f20b26-b1be-4db1-ba59-8ba88a2f3c14" />
 
 
 ---
